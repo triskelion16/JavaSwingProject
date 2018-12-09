@@ -1,20 +1,14 @@
 package entity;
 
+import java.util.Arrays;
+
 public class Product {
 	private String name;
-	private  int quantity;
-	private enum Unit {SZTUKI, LITRY, KILOGRAMY, METRY};
+	private int quantity;
+	private String[] unit = {"szt.", "litry", "kilogramy", "metry"};
 	private double price;
 	private int tax;
 	
-	public Product() {}
-	
-	public Product(String name, int quantity, double price, int tax) {
-		this.name = name;
-		this.quantity = quantity;
-		this.price = price;
-		this.tax = tax;
-	}
 	
 	public String getName() {
 		return name;
@@ -44,9 +38,17 @@ public class Product {
 		this.tax = tax;
 	}
 
+	public String[] getUnit() {
+		return unit;
+	}
+	public void setUnit(String[] unit) {
+		this.unit = unit;
+	}
+
 	@Override
 	public String toString() {
-		return "Product [name=" + name + ", quantity=" + quantity + ", price=" + price + ", tax=" + tax
-				+ "]";
+		return "Product [name=" + name + ", quantity=" + quantity + ", price="
+				+ price + ", tax=" + tax + "]";
 	}
+
 }

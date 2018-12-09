@@ -1,40 +1,38 @@
 package entity;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 
 public class Invoice {
 	private static int id;
 	private String invoiceNumber;
-	private Date date;
+	//private Date date;
 	private Client client;
 	private ArrayList<Product> products; //list
 	private double priceBrutto;
 	private int paymentDate;
-	private enum PayMethod {CASH, TRANSFER, CREDIT_CARD};
+	private String[] payMethod = {"Gotówka", "Przelew", "Karta kredytowa"};
 	
 	public Invoice() {}
 	
-	public Invoice(Client client) {
-		//invoiceNumber = id++;
-		//date.getTime();
-		this.client = client;
-		//this.product = product;
-	}
-
+	
 	public String getInvoiceNumber() {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		invoiceNumber = format.format(new Date()) + id++;
 		return invoiceNumber;
 	}
 	public void setInvoiceNumber(String invoiceNumber) {
 		this.invoiceNumber = invoiceNumber;
 	}
 
-	public Date getDate() {
+/*	public Date getDate() {
 		return date;
 	}
 	public void setDate(Date date) {
 		this.date = date;
-	}
+	}*/
 
 	public Client getClient() {
 		return client;
@@ -64,10 +62,18 @@ public class Invoice {
 		this.paymentDate = paymentDate;
 	}
 
+	public String[] getPayMethod() {
+		return payMethod;
+	}
+	public void setPayMethod(String[] payMethod) {
+		this.payMethod = payMethod;
+	}
+
 	@Override
 	public String toString() {
-		return "Invoice [invoiceNumber=" + invoiceNumber + ", date=" + date + ", client=" + client + ", products="
-				+ products + ", priceBrutto=" + priceBrutto + ", paymentDate=" + paymentDate + "]";
+		return "Invoice [invoiceNumber=" + invoiceNumber + ", client=" + client + ", products="
+				+ products + ", priceBrutto=" + priceBrutto + ", paymentDate=" + paymentDate + ", payMethod="
+				+ Arrays.toString(payMethod) + "]";
 	}
 
 }
