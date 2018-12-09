@@ -1,15 +1,25 @@
 package entity;
 
-import java.util.Arrays;
+import service.InvoiceService;
 
 public class Product {
 	private String name;
 	private int quantity;
-	private String[] unit = {"szt.", "litry", "kilogramy", "metry"};
-	private double price;
+	private String unit;
+	private double priceNetto;
 	private int tax;
+	//private double priceBrutto;
 	
+	public Product() {}
 	
+	public Product(String name, int quantity, String unit, double priceNetto, int tax) {
+		this.name = name;
+		this.quantity = quantity;
+		this.unit = unit;
+		this.priceNetto = priceNetto;
+		this.tax = tax;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -24,13 +34,6 @@ public class Product {
 		this.quantity = quantity;
 	}
 
-	public double getPrice() {
-		return price;
-	}
-	public void setPrice(double price) {
-		this.price = price;
-	}
-
 	public int getTax() {
 		return tax;
 	}
@@ -38,17 +41,32 @@ public class Product {
 		this.tax = tax;
 	}
 
-	public String[] getUnit() {
+	public String getUnit() {
 		return unit;
 	}
-	public void setUnit(String[] unit) {
+	public void setUnit(String unit) {
 		this.unit = unit;
 	}
 
+	public double getPriceNetto() {
+		return priceNetto;
+	}
+	public void setPriceNetto(double priceNetto) {
+		this.priceNetto = priceNetto;
+	}
+
+	public double getPriceBrutto() {
+		return priceNetto * tax / 100;
+	}
+//	public void setPriceBrutto(double priceBrutto) {
+//		this.priceBrutto = priceBrutto;
+//	}
+
 	@Override
 	public String toString() {
-		return "Product [name=" + name + ", quantity=" + quantity + ", price="
-				+ price + ", tax=" + tax + "]";
+		return "Product [name=" + name + ", quantity=" + quantity + ", unit=" + unit + ", priceNetto=" + priceNetto
+				+ ", tax=" + tax + ", priceBrutto=" + InvoiceService.getRoundPrice(getPriceBrutto()) + "]";
 	}
+
 
 }

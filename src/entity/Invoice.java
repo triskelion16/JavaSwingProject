@@ -2,37 +2,50 @@ package entity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 
+import service.InvoiceService;
+
 public class Invoice {
+	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+	
+	private final String company = "PW-JavaEE\nul. Nowowiejska 15\n00-665 Warszawa";
 	private static int id;
 	private String invoiceNumber;
-	//private Date date;
+	private String date;
 	private Client client;
 	private ArrayList<Product> products; //list
-	private double priceBrutto;
-	private int paymentDate;
-	private String[] payMethod = {"Gotówka", "Przelew", "Karta kredytowa"};
+	private double totalPrice;
 	
 	public Invoice() {}
 	
-	
+	public Invoice(Client client, ArrayList<Product> products, double totalPrice) {
+		invoiceNumber = "* BRAK *";
+		date = "* BRAK *";
+		this.client = client;
+		this.products = products;
+		this.totalPrice = totalPrice;
+	}
+
+	public String getCompany() {
+		return company;
+	}
+
 	public String getInvoiceNumber() {
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-		invoiceNumber = format.format(new Date()) + id++;
+		format = new SimpleDateFormat("yyMMdd");
+		invoiceNumber = format.format(new Date()) + "/" + id++;
 		return invoiceNumber;
 	}
 	public void setInvoiceNumber(String invoiceNumber) {
 		this.invoiceNumber = invoiceNumber;
 	}
 
-/*	public Date getDate() {
-		return date;
+	public String getDate() {
+		return format.format(new Date());
 	}
-	public void setDate(Date date) {
+	public void setDate(String date) {
 		this.date = date;
-	}*/
+	}
 
 	public Client getClient() {
 		return client;
@@ -48,32 +61,20 @@ public class Invoice {
 		this.products = products;
 	}
 
-	public double getPriceBrutto() {
-		return priceBrutto;
+	public double getTotal() {
+		return totalPrice;
 	}
-	public void setPriceBrutto(double priceBrutto) {
-		this.priceBrutto = priceBrutto;
+	public void setTotal(double total) {
+		this.totalPrice = total;
 	}
-
-	public int getPaymentDate() {
-		return paymentDate;
-	}
-	public void setPaymentDate(int paymentDate) {
-		this.paymentDate = paymentDate;
-	}
-
-	public String[] getPayMethod() {
-		return payMethod;
-	}
-	public void setPayMethod(String[] payMethod) {
-		this.payMethod = payMethod;
-	}
+	
+	
 
 	@Override
 	public String toString() {
-		return "Invoice [invoiceNumber=" + invoiceNumber + ", client=" + client + ", products="
-				+ products + ", priceBrutto=" + priceBrutto + ", paymentDate=" + paymentDate + ", payMethod="
-				+ Arrays.toString(payMethod) + "]";
+		return "Faktura numer: " + invoiceNumber + " | Data wystawienia: " + date + " | Nazwa klienta: " + client.getName() + " | Nip klienta: " + client.getNip() 
+		+ " | Kwota faktury: " + InvoiceService.getRoundPrice(totalPrice) + " zł.";
 	}
 
+	
 }
