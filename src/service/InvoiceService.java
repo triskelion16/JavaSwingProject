@@ -13,8 +13,8 @@ public class InvoiceService {
 	public static ArrayList<String> getInvoices() {
 		ArrayList<String> invoices = new ArrayList<>();
 		
-		Product p1 = new Product("Produkt 1", 50, "sztuki", 5.99, 23);
-		Product p2 = new Product("Produkt 1", 50, "sztuki", 20.99, 23);
+//		Product p1 = new Product("Produkt 1", 50, "sztuki", 5.99, 23);
+//		Product p2 = new Product("Produkt 1", 50, "sztuki", 20.99, 23);
 		
 		Client c1 = new Client("Saturn sp.j.", "8376103872", "01-990 Warszawa, Kwiatowa 2/4");
 		Client c2 = new Client("Jowisz sp. z o.o.", "1234567890", "61-100 Poznań, Piękna 5");
@@ -24,8 +24,8 @@ public class InvoiceService {
 		Client c6 = new Client("Uran sp.k.", "0935188365", "00-900 Warszawa, Moliera 2");
 		
 		ArrayList<Product> products = new ArrayList<>();
-		products.add(p1);
-		products.add(p2);
+//		products.add(p1);
+//		products.add(p2);
 		
 		double totalPrice = totalPrice(products);
 		
@@ -51,15 +51,16 @@ public class InvoiceService {
 		double result = 0;
 		
 		for(Product p : products) {
-			result += p.getPriceBrutto();
+			//result += p.getPriceBrutto();
 		}
 		return result;
 	}
 	
 	
-	public static String getRoundPrice(double price) {
-		DecimalFormat format = new DecimalFormat("##.00");
-		return format.format(price);
+	public static double getRoundPrice(double price) {
+		return Math.round(price * 100.0) / 100.0;
+//		DecimalFormat format = new DecimalFormat("##.00");
+//		return format.format(price);
 	}
 
 }

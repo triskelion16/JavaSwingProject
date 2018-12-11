@@ -7,16 +7,15 @@ public class Product {
 	private int quantity;
 	private String unit;
 	private double priceNetto;
-	private int tax;
-	//private double priceBrutto;
+	private double tax;
 	
 	public Product() {}
 	
-	public Product(String name, int quantity, String unit, double priceNetto, int tax) {
+	public Product(String name, double priceNetto, int quantity, String unit, int tax) {
 		this.name = name;
+		this.priceNetto = priceNetto;
 		this.quantity = quantity;
 		this.unit = unit;
-		this.priceNetto = priceNetto;
 		this.tax = tax;
 	}
 
@@ -34,10 +33,10 @@ public class Product {
 		this.quantity = quantity;
 	}
 
-	public int getTax() {
+	public double getTax() {
 		return tax;
 	}
-	public void setTax(int tax) {
+	public void setTax(double tax) {
 		this.tax = tax;
 	}
 
@@ -55,18 +54,12 @@ public class Product {
 		this.priceNetto = priceNetto;
 	}
 
-	public double getPriceBrutto() {
-		return priceNetto * tax / 100;
-	}
-//	public void setPriceBrutto(double priceBrutto) {
-//		this.priceBrutto = priceBrutto;
-//	}
-
-	@Override
-	public String toString() {
-		return "Product [name=" + name + ", quantity=" + quantity + ", unit=" + unit + ", priceNetto=" + priceNetto
-				+ ", tax=" + tax + ", priceBrutto=" + InvoiceService.getRoundPrice(getPriceBrutto()) + "]";
+	public double getNettoValue() {
+		return InvoiceService.getRoundPrice(quantity * priceNetto); // Wartość netto zaokrąglona
 	}
 
+	public double getBruttoValue() {
+		return InvoiceService.getRoundPrice(((tax / 100) * getNettoValue()) + getNettoValue()); // Wartość brutto zaokraglona
+	}
 
 }

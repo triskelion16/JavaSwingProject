@@ -6,12 +6,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableColumn;
 
 import entity.Client;
 import entity.Invoice;
@@ -37,36 +40,66 @@ public class InvoiceGUI extends JFrame {
 		setCompanyData(frame);
 		productTable(frame);
 	}
-
-	// ****** Produkty *****************************
+	
+	//******* Produkty tabela w panelu, button i podsumowanie*****************************
 	private void productTable(JFrame frame) {
 		JPanel panel = new JPanel();
 		panel.setBounds(0, 250, 1000, 250);
 		frame.getContentPane().add(panel);
 		panel.setLayout(new FlowLayout());
 
-		String[] columnNames = { "Nazwa", "Ilość", "Jednostka", "Cena netto", "Stawka VAT", "Cena brutto"};
-		/*Object[][] data = { { "Jan", "Kowalski", "sztuki", new Double(22.99), new Integer(23), new Double(30.10) },
-				{ "Zosia", "Samosia", "litry",new Double(55.55), new Integer(19), new Double(80.00) } };*/
+		Product p1 = new Product("Produkt 1", 2.00, 5, "szt.", 23);
+		Product p2 = new Product("Produkt 2", 3.99, 10, "litry", 10);
 		
-		Product p1 = new Product("Produkt 1", 50, "sztuki", 5.99, 23);
-		Product p2 = new Product("Produkt 2", 12, "litry", 20.99, 23);
-		
-		Object[][] data = {
-				{p1.getName(), p1.getQuantity(), p1.getUnit(), p1.getPriceNetto(), p1.getTax(), p1.getPriceBrutto()},
-				{p2.getName(), p2.getQuantity(), p2.getUnit(), p2.getPriceNetto(), p2.getTax(), p2.getPriceBrutto()}
-		};
-			
-		
-		
-		
+		String[] columnNames = { "Nazwa towaru", "Cena netto", "Ilość", "Jednostka", "Wartość netto", "Stawka VAT", "Wartość brutto" };
+Object[][] data = {
+		{ p1.getName(), p1.getPriceNetto(), p1.getQuantity(), p1.getUnit(), p1.getNettoValue(), p1.getTax(), p1.getBruttoValue() },
+		{ p2.getName(), p2.getPriceNetto(), p2.getQuantity(), p2.getUnit(), p2.getNettoValue(), p2.getTax(), p2.getBruttoValue() } };
+
 		final JTable table = new JTable(data, columnNames);
-		
+
+		 TableColumn column = null;
+		 for (int i = 0; i < columnNames.length; i++) {
+		 column = table.getColumnModel().getColumn(i);
+		 if (i == 0)
+		 column.setPreferredWidth(200);
+		 else
+		 column.setPreferredWidth(50);
+		 }
+
 		table.setPreferredScrollableViewportSize(new Dimension(980, 2500));
 		table.setFillsViewportHeight(true);
 		JScrollPane scrollPane = new JScrollPane(table);
 		panel.add(scrollPane);
-		//frame.pack();
+		
+		JButton addProductButton = new JButton("Dodaj nowy produkt");
+		addProductButton.setBounds(355, 520, 250, 25);
+		frame.getContentPane().add(addProductButton);
+
+		addProductButton.addActionListener(new ActionListener() { // Dodanie produktu listener
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("OK");
+			}
+		});
+		
+		double nettoSum = 0;
+		double bruttoSum = 0;
+		
+		for(int i = 0; i < data.length; i++) {
+			for(int j = 0; j < data[i].length; j++) {
+			}
+			nettoSum = (double) data[i][4] + nettoSum;
+			bruttoSum = (double) data[i][6] + bruttoSum;
+		}
+		
+		JLabel totalNettoLabel = new JLabel("Suma NETTO:    " + nettoSum + " zł.");
+		totalNettoLabel.setBounds(700, 560, 200, 30);
+		frame.getContentPane().add(totalNettoLabel);
+		
+		JLabel totalBruttoLabel = new JLabel("Suma BRUTTO:  " + bruttoSum + " zł.");
+		totalBruttoLabel.setBounds(700, 580, 200, 30);
+		frame.getContentPane().add(totalBruttoLabel);
 	}
 
 	// ****** Dane firmy ***************************
