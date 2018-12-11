@@ -3,12 +3,12 @@ package entity;
 public class Client {
 	private String name;
 	private String nip;
-	private String adress;
+	private String address;
 	
 	public Client(String name, String nip, String address) {
 		this.name = name;
 		this.nip = nip;
-		this.adress = address;
+		this.address = address;
 	}
 
 	public String getName() {
@@ -25,16 +25,16 @@ public class Client {
 		this.nip = nip;
 	}
 
-	public String getAdress() {
-		return adress;
+	public String getAddress() {
+		return address;
 	}
-	public void setAdress(String adress) {
-		this.adress = adress;
+	public void setAddress(String adress) {
+		this.address = adress;
 	}
 
 	@Override
 	public String toString() {
-		return "Client [name=" + name + ", nip=" + nip + ", adress=" + adress + "]";
+		return "Client [name=" + name + ", nip=" + nip + ", adress=" + address + "]";
 	}
 
 }

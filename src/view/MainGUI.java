@@ -13,6 +13,8 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import service.InvoiceService;
 
@@ -36,22 +38,35 @@ public class MainGUI extends JFrame{
 		frame.getContentPane().add(label);
 		
 		JPanel panel1 = new JPanel();
-		panel1.setBounds(0, 180, 1000, 400);
+		panel1.setBounds(0, 180, 1000, 405);
 		frame.getContentPane().add(panel1);
 		panel1.setLayout(new FlowLayout());
-		
-		JButton button = new JButton("Dodaj nową fakturę");
-		button.setBounds(10, 650, 200, 30);
-		frame.getContentPane().add(button);
 		
 		JList<String> list = new JList<>(new String[] {});
 		ArrayList<String> invoices = InvoiceService.getInvoices(); // Lista faktur toString
 		
 		String[] array = invoices.toArray(new String[invoices.size()]); // Konwersja listy do tablicy
 		list.setListData(array);
+		
 		JScrollPane listScroller = new JScrollPane(list); // Scroll w przypadku większej ilości faktur
 		listScroller.setPreferredSize(new Dimension(980, 400));
 		panel1.add(listScroller);
+		
+		JButton button = new JButton("Dodaj nową fakturę");
+		button.setBounds(10, 650, 200, 30);
+		frame.getContentPane().add(button);
+		
+		//***** Invoice list listener ************************
+		list.addListSelectionListener(new ListSelectionListener() {
+		    public void valueChanged(ListSelectionEvent event) {
+		        if (!event.getValueIsAdjusting()){
+		            JList<?> source = (JList<?>)event.getSource();
+		            //String selected = source.getSelectedValue().toString();
+		            Integer selected = source.getSelectedValue().hashCode();
+		            System.out.println(selected);
+		        }
+		    }
+		});
 		
 		//***** Button Listener *****************************
 		button.addActionListener(new ActionListener() {
