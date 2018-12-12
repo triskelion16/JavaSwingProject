@@ -7,13 +7,14 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 
 import entity.Client;
@@ -39,6 +40,37 @@ public class InvoiceGUI extends JFrame {
 		setClient(frame);
 		setCompanyData(frame);
 		productTable(frame);
+		isInvoiceEditable(frame);
+		save(frame);
+	}
+	
+	//******* Button - zapisz i zamknij ******************************
+	private void save(JFrame frame) {
+		JButton saveButton = new JButton("Zapisz i zamknij");
+		saveButton.setBounds(355, 680, 250, 40);
+		frame.getContentPane().add(saveButton);
+		
+		saveButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("SAVE");
+			}
+		});
+	}
+	
+	//******* CheckBox - wystaw fakturę ******************************
+	private void isInvoiceEditable(JFrame frame) {
+		JCheckBox checkBox = new JCheckBox("*** Wystaw fakturę! ***");
+		checkBox.setBounds(380, 620, 250, 50);
+		frame.getContentPane().add(checkBox);
+		
+		checkBox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(checkBox.isSelected()) 
+					JOptionPane.showMessageDialog(frame, "Warning!");
+			}
+		});
 	}
 	
 	//******* Produkty tabela w panelu, button i podsumowanie*****************************
@@ -79,7 +111,7 @@ Object[][] data = {
 		addProductButton.addActionListener(new ActionListener() { // Dodanie produktu listener
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("OK");
+				System.out.println("ADD");
 			}
 		});
 		
