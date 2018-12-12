@@ -19,7 +19,7 @@ public class Invoice {
 	
 	private final String companyName = "PW-JavaEE";
 	private final String companyNip = "0987654321";
-	private final String companyAddress = "00-665 Warszawa, ul. Nowowiejska 15";
+	private final String companyAddress = "00-665 Warszawa, Nowowiejska 15";
 	
 	public Invoice() {
 		invoiceNumber = "* BRAK *";
@@ -27,13 +27,20 @@ public class Invoice {
 		isEditable = true;
 	}
 	
-	public Invoice(Client client, ArrayList<Product> products, double totalPrice) {
-		invoiceNumber = "* BRAK *";
-		date = "* BRAK *";
+	public Invoice(Client client, ArrayList<Product> products, double totalPrice, boolean isEditable) {
 		this.client = client;
 		this.products = products;
 		this.totalPrice = totalPrice;
-		isEditable = true;
+		this.isEditable = isEditable;
+		
+		if(isEditable) {
+			invoiceNumber = "* BRAK *";
+			date = "* BRAK *";
+		} else {
+			format = new SimpleDateFormat("yyMMdd");
+			invoiceNumber = format.format(new Date()) + "/" + id++;
+			format.format(new Date());
+		}
 	}
 
 	public String getInvoiceNumber() {

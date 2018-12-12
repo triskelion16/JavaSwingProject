@@ -62,4 +62,10 @@ public class Product {
 		return InvoiceService.getRoundPrice(((tax / 100) * getNettoValue()) + getNettoValue()); // Wartość brutto zaokraglona
 	}
 
+	@Override
+	public String toString() {
+		return "Product [name=" + name + ", quantity=" + quantity + ", unit=" + unit + ", priceNetto=" + priceNetto
+				+ ", tax=" + tax + "]";
+	}
+
 }

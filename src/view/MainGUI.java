@@ -72,7 +72,7 @@ public class MainGUI extends JFrame{
 		button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				new InvoiceGUI();
+				new InvoiceNewGUI();
 			}
 		});
 		

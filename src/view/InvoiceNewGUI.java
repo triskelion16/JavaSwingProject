@@ -22,14 +22,16 @@ import entity.Invoice;
 import entity.Product;
 import service.ClientService;
 
-public class InvoiceGUI extends JFrame {
+public class InvoiceNewGUI extends JFrame {
 	private static final long serialVersionUID = 1L;
 
 	Invoice invoice = new Invoice();
 	ArrayList<Client> clients = new ArrayList<>();
 	ClientService clientService = new ClientService();
 
-	public InvoiceGUI() {
+	ArrayList<Product> products = new ArrayList<>();
+
+	public InvoiceNewGUI() {
 		JFrame frame = new JFrame("Dodawanie faktury");
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.setBounds(200, 50, 1000, 800);
@@ -40,40 +42,64 @@ public class InvoiceGUI extends JFrame {
 		setClient(frame);
 		setCompanyData(frame);
 		productTable(frame);
+		resume(frame);
 		isInvoiceEditable(frame);
 		save(frame);
 	}
-	
-	//******* Button - zapisz i zamknij ******************************
+
+	// ******* Button - zapisz i zamknij ******************************
 	private void save(JFrame frame) {
 		JButton saveButton = new JButton("Zapisz i zamknij");
 		saveButton.setBounds(355, 680, 250, 40);
 		frame.getContentPane().add(saveButton);
-		
+
 		saveButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+
 				System.out.println("SAVE");
+				frame.dispose();
 			}
 		});
 	}
-	
-	//******* CheckBox - wystaw fakturę ******************************
+
+	// ******* CheckBox - wystaw fakturę ******************************
 	private void isInvoiceEditable(JFrame frame) {
 		JCheckBox checkBox = new JCheckBox("*** Wystaw fakturę! ***");
 		checkBox.setBounds(380, 620, 250, 50);
 		frame.getContentPane().add(checkBox);
-		
+
 		checkBox.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(checkBox.isSelected()) 
-					JOptionPane.showMessageDialog(frame, "Warning!");
+				if (checkBox.isSelected())
+					JOptionPane.showMessageDialog(frame, "Po wystawieniu faktury - brak możliwości edycji!");
 			}
 		});
 	}
 	
-	//******* Produkty tabela w panelu, button i podsumowanie*****************************
+	//********** Podsumowanie*****************************
+	private double resume(JFrame frame) {
+		double nettoSum = 0;
+		double bruttoSum = 0;
+		
+		for(Product p : products) {
+			nettoSum += p.getNettoValue();
+			bruttoSum += p.getBruttoValue();
+		}
+
+		JLabel totalNettoLabel = new JLabel("Suma NETTO:    " + nettoSum + " zł.");
+		totalNettoLabel.setBounds(700, 560, 200, 30);
+		frame.getContentPane().add(totalNettoLabel);
+
+		JLabel totalBruttoLabel = new JLabel("Suma BRUTTO:  " + bruttoSum + " zł.");
+		totalBruttoLabel.setBounds(700, 580, 200, 30);
+		frame.getContentPane().add(totalBruttoLabel);
+		
+		return bruttoSum;
+	}
+
+	// ******* Produkty - tabela w panelu i button ***************
 	private void productTable(JFrame frame) {
 		JPanel panel = new JPanel();
 		panel.setBounds(0, 250, 1000, 250);
@@ -82,28 +108,40 @@ public class InvoiceGUI extends JFrame {
 
 		Product p1 = new Product("Produkt 1", 2.00, 5, "szt.", 23);
 		Product p2 = new Product("Produkt 2", 3.99, 10, "litry", 10);
-		
+
+		products.add(p1);
+		products.add(p2);
+
 		String[] columnNames = { "Nazwa towaru", "Cena netto", "Ilość", "Jednostka", "Wartość netto", "Stawka VAT", "Wartość brutto" };
-Object[][] data = {
-		{ p1.getName(), p1.getPriceNetto(), p1.getQuantity(), p1.getUnit(), p1.getNettoValue(), p1.getTax(), p1.getBruttoValue() },
-		{ p2.getName(), p2.getPriceNetto(), p2.getQuantity(), p2.getUnit(), p2.getNettoValue(), p2.getTax(), p2.getBruttoValue() } };
+		Object[][] data = new Object[products.size()][columnNames.length];
+
+		Product[] productsArray = products.toArray(new Product[products.size()]);
+		for (int i = 0; i < products.size(); i++) {
+			data[i][0] = productsArray[i].getName();
+			data[i][1] = productsArray[i].getPriceNetto();
+			data[i][2] = productsArray[i].getQuantity();
+			data[i][3] = productsArray[i].getUnit();
+			data[i][4] = productsArray[i].getNettoValue();
+			data[i][5] = productsArray[i].getTax();
+			data[i][6] = productsArray[i].getBruttoValue();
+		}
 
 		final JTable table = new JTable(data, columnNames);
 
-		 TableColumn column = null;
-		 for (int i = 0; i < columnNames.length; i++) {
-		 column = table.getColumnModel().getColumn(i);
-		 if (i == 0)
-		 column.setPreferredWidth(200);
-		 else
-		 column.setPreferredWidth(50);
-		 }
+		TableColumn column = null;
+		for (int i = 0; i < columnNames.length; i++) {
+			column = table.getColumnModel().getColumn(i);
+			if (i == 0)
+				column.setPreferredWidth(200);
+			else
+				column.setPreferredWidth(50);
+		}
 
 		table.setPreferredScrollableViewportSize(new Dimension(980, 2500));
 		table.setFillsViewportHeight(true);
 		JScrollPane scrollPane = new JScrollPane(table);
 		panel.add(scrollPane);
-		
+
 		JButton addProductButton = new JButton("Dodaj nowy produkt");
 		addProductButton.setBounds(355, 520, 250, 25);
 		frame.getContentPane().add(addProductButton);
@@ -114,24 +152,6 @@ Object[][] data = {
 				System.out.println("ADD");
 			}
 		});
-		
-		double nettoSum = 0;
-		double bruttoSum = 0;
-		
-		for(int i = 0; i < data.length; i++) {
-			for(int j = 0; j < data[i].length; j++) {
-			}
-			nettoSum = (double) data[i][4] + nettoSum;
-			bruttoSum = (double) data[i][6] + bruttoSum;
-		}
-		
-		JLabel totalNettoLabel = new JLabel("Suma NETTO:    " + nettoSum + " zł.");
-		totalNettoLabel.setBounds(700, 560, 200, 30);
-		frame.getContentPane().add(totalNettoLabel);
-		
-		JLabel totalBruttoLabel = new JLabel("Suma BRUTTO:  " + bruttoSum + " zł.");
-		totalBruttoLabel.setBounds(700, 580, 200, 30);
-		frame.getContentPane().add(totalBruttoLabel);
 	}
 
 	// ****** Dane firmy ***************************
