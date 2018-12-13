@@ -21,6 +21,7 @@ import entity.Client;
 import entity.Invoice;
 import entity.Product;
 import service.ClientService;
+import service.InvoiceService;
 
 public class InvoiceNewGUI extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -56,8 +57,15 @@ public class InvoiceNewGUI extends JFrame {
 		saveButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				
+				if(!invoice.isEditable()) {
+					invoice.setDate();
+					invoice.setInvoiceNumber();
+				}
 
-				System.out.println("SAVE");
+				InvoiceService.setInvoices(invoice);
+				//System.out.println(invoice.toString());
+				
 				frame.dispose();
 			}
 		});
@@ -72,14 +80,22 @@ public class InvoiceNewGUI extends JFrame {
 		checkBox.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (checkBox.isSelected())
+				
+				if (checkBox.isSelected()) {
 					JOptionPane.showMessageDialog(frame, "Po wystawieniu faktury - brak możliwości edycji!");
+
+					invoice.setEditable(false);
+				} else {
+					invoice.setEditable(true);
+				}
 			}
 		});
+		
+		
 	}
 	
 	//********** Podsumowanie*****************************
-	private double resume(JFrame frame) {
+	private void resume(JFrame frame) {
 		double nettoSum = 0;
 		double bruttoSum = 0;
 		
@@ -96,7 +112,7 @@ public class InvoiceNewGUI extends JFrame {
 		totalBruttoLabel.setBounds(700, 580, 200, 30);
 		frame.getContentPane().add(totalBruttoLabel);
 		
-		return bruttoSum;
+		invoice.setTotalPrice(bruttoSum);
 	}
 
 	// ******* Produkty - tabela w panelu i button ***************
@@ -150,6 +166,7 @@ public class InvoiceNewGUI extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("ADD");
+				System.out.println(invoice.getClient().toString());
 			}
 		});
 	}
@@ -214,6 +231,8 @@ public class InvoiceNewGUI extends JFrame {
 				selectedClientNameLabel.setText("Nazwa: " + clients.get(selectedClient).getName());
 				selectedClientNipLabel.setText("NIP: " + clients.get(selectedClient).getNip());
 				selectedClientAddressLabel.setText("Adres: " + clients.get(selectedClient).getAddress());
+				
+				invoice.setClient(clients.get(selectedClient));
 			}
 		});
 	}

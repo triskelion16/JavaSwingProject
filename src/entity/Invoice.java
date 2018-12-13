@@ -9,7 +9,7 @@ import service.InvoiceService;
 public class Invoice {
 	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 	
-	private static int id;
+	private static int id = 0;
 	private String invoiceNumber;
 	private String date;
 	private Client client;
@@ -25,6 +25,7 @@ public class Invoice {
 		invoiceNumber = "* BRAK *";
 		date = "* BRAK *";
 		isEditable = true;
+		client = new Client("Saturn sp.j.", "8376103872", "01-990 Warszawa, Kwiatowa 2/4");
 	}
 	
 	public Invoice(Client client, ArrayList<Product> products, double totalPrice, boolean isEditable) {
@@ -37,27 +38,25 @@ public class Invoice {
 			invoiceNumber = "* BRAK *";
 			date = "* BRAK *";
 		} else {
+			format.format(new Date());
 			format = new SimpleDateFormat("yyMMdd");
 			invoiceNumber = format.format(new Date()) + "/" + id++;
-			format.format(new Date());
 		}
 	}
 
 	public String getInvoiceNumber() {
-		//format = new SimpleDateFormat("yyMMdd");
-		//invoiceNumber = format.format(new Date()) + "/" + id++;
 		return invoiceNumber;
 	}
-	public void setInvoiceNumber(String invoiceNumber) {
-		this.invoiceNumber = invoiceNumber;
+	public void setInvoiceNumber() {
+		format = new SimpleDateFormat("yyMMdd");
+		this.invoiceNumber = format.format(new Date()) + "/" + ++id;
 	}
 
 	public String getDate() {
-		//return format.format(new Date());
 		return date;
 	}
-	public void setDate(String date) {
-		this.date = date;
+	public void setDate() {
+		this.date = format.format(new Date());
 	}
 
 	public Client getClient() {

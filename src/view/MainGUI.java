@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -16,10 +17,13 @@ import javax.swing.JScrollPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import entity.Invoice;
 import service.InvoiceService;
 
 public class MainGUI extends JFrame{
 	private static final long serialVersionUID = 1L;
+	
+	
 	
 	public MainGUI() {
 		JFrame frame = new JFrame("ZDA - Homework");
@@ -28,6 +32,9 @@ public class MainGUI extends JFrame{
 		frame.setLayout(null);
 		frame.setVisible(true);
 		
+		frame.invalidate();
+		frame.validate();
+		frame.repaint();
 		JLabel title = new JLabel("Program do wystawiania i przeglądania faktur");
 		title.setBounds(200, 20, 1000, 90);
 		title.setFont(new Font("Sefif", Font.BOLD, 22));
@@ -42,11 +49,27 @@ public class MainGUI extends JFrame{
 		frame.getContentPane().add(panel1);
 		panel1.setLayout(new FlowLayout());
 		
-		JList<String> list = new JList<>(new String[] {});
-		ArrayList<String> invoices = InvoiceService.getInvoices(); // Lista faktur toString
 		
-		String[] array = invoices.toArray(new String[invoices.size()]); // Konwersja listy do tablicy
-		list.setListData(array);
+		DefaultListModel<String> model = new DefaultListModel<>();
+		
+		ArrayList<Invoice> invoicesList = InvoiceService.getInvoices(); // Lista faktur typy Invoice
+//		ArrayList<String> invoices = new ArrayList<>(); // List faktur typu Strng - metoda toString z klasy Invoice
+		
+		
+		for(Invoice i : invoicesList) {
+			model.addElement(i.toString());
+		}
+		
+		
+		JList<String> list = new JList<>(model);
+		
+		//String[] array = invoices.toArray(new String[invoices.size()]); // Konwersja listy do tablicy
+		
+		for(int i = 0; i < model.getSize(); i++) {
+			System.out.println(list.getModel().getElementAt(i));
+		}
+		
+		//list.setListData(array);
 		
 		JScrollPane listScroller = new JScrollPane(list); // Scroll w przypadku większej ilości faktur
 		listScroller.setPreferredSize(new Dimension(980, 400));
@@ -73,8 +96,10 @@ public class MainGUI extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				new InvoiceNewGUI();
+				frame.dispose();
 			}
 		});
 		
 	}
+	
 }
