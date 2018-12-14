@@ -23,7 +23,7 @@ import service.InvoiceService;
 public class MainGUI extends JFrame{
 	private static final long serialVersionUID = 1L;
 	
-	
+	private Boolean isNew;
 	
 	public MainGUI() {
 		JFrame frame = new JFrame("ZDA - Homework");
@@ -53,23 +53,12 @@ public class MainGUI extends JFrame{
 		DefaultListModel<String> model = new DefaultListModel<>();
 		
 		ArrayList<Invoice> invoicesList = InvoiceService.getInvoices(); // Lista faktur typy Invoice
-//		ArrayList<String> invoices = new ArrayList<>(); // List faktur typu Strng - metoda toString z klasy Invoice
-		
 		
 		for(Invoice i : invoicesList) {
 			model.addElement(i.toString());
 		}
 		
-		
 		JList<String> list = new JList<>(model);
-		
-		//String[] array = invoices.toArray(new String[invoices.size()]); // Konwersja listy do tablicy
-		
-		for(int i = 0; i < model.getSize(); i++) {
-			System.out.println(list.getModel().getElementAt(i));
-		}
-		
-		//list.setListData(array);
 		
 		JScrollPane listScroller = new JScrollPane(list); // Scroll w przypadku większej ilości faktur
 		listScroller.setPreferredSize(new Dimension(980, 400));
@@ -84,9 +73,13 @@ public class MainGUI extends JFrame{
 		    public void valueChanged(ListSelectionEvent event) {
 		        if (!event.getValueIsAdjusting()){
 		            JList<?> source = (JList<?>)event.getSource();
-		            //String selected = source.getSelectedValue().toString();
-		            Integer selected = source.getSelectedValue().hashCode();
+		            
+		            String selected = source.getSelectedValue().toString();
 		            System.out.println(selected);
+		            
+		            Integer invoiceIndex = source.getSelectedIndex();
+		            System.out.println(invoiceIndex);
+		            
 		        }
 		    }
 		});
@@ -95,11 +88,10 @@ public class MainGUI extends JFrame{
 		button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				new InvoiceNewGUI();
+				isNew = true;
+				new InvoiceNewGUI(isNew);
 				frame.dispose();
 			}
 		});
-		
 	}
-	
 }

@@ -7,7 +7,7 @@ import java.util.Date;
 import service.InvoiceService;
 
 public class Invoice {
-	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+	private SimpleDateFormat format;
 	
 	private static int id = 0;
 	private String invoiceNumber;
@@ -25,25 +25,8 @@ public class Invoice {
 		invoiceNumber = "* BRAK *";
 		date = "* BRAK *";
 		isEditable = true;
-		client = new Client("Saturn sp.j.", "8376103872", "01-990 Warszawa, Kwiatowa 2/4");
 	}
 	
-	public Invoice(Client client, ArrayList<Product> products, double totalPrice, boolean isEditable) {
-		this.client = client;
-		this.products = products;
-		this.totalPrice = totalPrice;
-		this.isEditable = isEditable;
-		
-		if(isEditable) {
-			invoiceNumber = "* BRAK *";
-			date = "* BRAK *";
-		} else {
-			format.format(new Date());
-			format = new SimpleDateFormat("yyMMdd");
-			invoiceNumber = format.format(new Date()) + "/" + id++;
-		}
-	}
-
 	public String getInvoiceNumber() {
 		return invoiceNumber;
 	}
@@ -56,6 +39,7 @@ public class Invoice {
 		return date;
 	}
 	public void setDate() {
+		format = new SimpleDateFormat("yyyy-MM-dd");
 		this.date = format.format(new Date());
 	}
 

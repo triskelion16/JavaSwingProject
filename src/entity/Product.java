@@ -9,14 +9,8 @@ public class Product {
 	private double priceNetto;
 	private double tax;
 	
-	public Product() {}
-	
-	public Product(String name, double priceNetto, int quantity, String unit, int tax) {
-		this.name = name;
-		this.priceNetto = priceNetto;
-		this.quantity = quantity;
-		this.unit = unit;
-		this.tax = tax;
+	public Product() {
+		unit = "sztuki";
 	}
 
 	public String getName() {
