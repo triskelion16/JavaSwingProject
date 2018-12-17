@@ -3,18 +3,34 @@ package service;
 import java.util.ArrayList;
 
 import entity.Product;
-import view.InvoiceNewGUI;
 
 public class ProductService {
-	static ArrayList<Product> products = new ArrayList<>();
-
-	public static ArrayList<Product> getProducts() {
-		return products;
+	private ArrayList<Product> products = new ArrayList<>();
+	
+	public Product[] getProducts() {
+		return products.toArray(new Product[products.size()]);
 	}
-
-	public static void setProducts(Product product) {
+	
+	public void addProduct(Product product) {
 		products.add(product);
-		
-		new InvoiceNewGUI(false);
 	}
+	
+	public void deleteProduct(Product product) {
+		products.remove(product);
+	}
+	
+
+	
+	
+	
+
+//	public static ArrayList<Product> getProducts() {
+//		return products;
+//	}
+//
+//	public static void setProducts(Product product) {
+//		products.add(product);
+//		
+//		new InvoiceNewGUI(false);
+//	}
 }

@@ -1,54 +1,44 @@
 package view;
 
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
-
 import entity.Client;
 import entity.Invoice;
-import entity.Product;
 import service.ClientService;
 import service.InvoiceService;
 import service.ProductService;
 
-public class InvoiceNewGUI extends JFrame {
+public class InvoiceNewGUI extends JFrame{
 	private static final long serialVersionUID = 1L;
-
-	JFrame frame = new JFrame("Dodawanie faktury");
-
+	
+	private InvoiceService invoiceService;
+	private ClientService clientService;
+	private ProductService productService;
+	private MainGUI mainGUI;
+	
 	Invoice invoice = new Invoice();
-	ArrayList<Client> clients = new ArrayList<>();
-	ClientService clientService = new ClientService();
-	ArrayList<Product> products = new ArrayList<>();
-	Product product = new Product();
-
-	public InvoiceNewGUI(Boolean isNew) {
-
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		frame.setBounds(200, 50, 1000, 800);
-		frame.setLayout(null);
-		frame.setVisible(true);
+	
+	public InvoiceNewGUI(InvoiceService invoiceService, ProductService productService, ClientService clientService, MainGUI mainGUI) {
+		this.invoiceService = invoiceService;
+		this.productService = productService;
+		this.clientService = clientService;
+		this.mainGUI = mainGUI;
+		
+		setBounds(200, 50, 1000, 800);
+		setLayout(null);
+		setVisible(true);
 
 		setInvoiceNumberAddDate();
 		setClient();
 		setCompanyData();
-		productTable(isNew);
-		resume();
+//		productTable();
+//		resume();
 		isInvoiceEditable();
 		save();
 	}
@@ -57,7 +47,7 @@ public class InvoiceNewGUI extends JFrame {
 	private void save() {
 		JButton saveButton = new JButton("Zapisz i zamknij");
 		saveButton.setBounds(355, 730, 250, 40);
-		frame.getContentPane().add(saveButton);
+		getContentPane().add(saveButton);
 
 		saveButton.addActionListener(new ActionListener() {
 			@Override
@@ -69,10 +59,14 @@ public class InvoiceNewGUI extends JFrame {
 				}
 
 				if (invoice.getClient() == null) {
-					JOptionPane.showMessageDialog(frame, "Należy wybrać klienta z listy!");
+					JOptionPane.showMessageDialog(null, "Należy wybrać klienta z listy!");
 				} else {
-					InvoiceService.setInvoices(invoice);
-					frame.dispose();
+					invoiceService.addInvoice(invoice);
+					
+					new MainGUI(invoiceService, productService, clientService);
+					
+					//System.out.println(invoiceService.getInvoices().length);
+					dispose();
 				}
 			}
 		});
@@ -82,15 +76,14 @@ public class InvoiceNewGUI extends JFrame {
 	private void isInvoiceEditable() {
 		JCheckBox checkBox = new JCheckBox("*** Wystaw fakturę! ***");
 		checkBox.setBounds(380, 680, 250, 50);
-		frame.getContentPane().add(checkBox);
+		getContentPane().add(checkBox);
 
 		checkBox.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
 				if (checkBox.isSelected()) {
-					JOptionPane.showMessageDialog(frame, "Po wystawieniu faktury - brak możliwości edycji!");
-
+					JOptionPane.showMessageDialog(null, "Po wystawieniu faktury - brak możliwości edycji!");
 					invoice.setEditable(false);
 				} else {
 					invoice.setEditable(true);
@@ -100,38 +93,38 @@ public class InvoiceNewGUI extends JFrame {
 	}
 
 	// ********** Podsumowanie*****************************
-	private void resume() {
-		double nettoSum = 0;
-		double bruttoSum = 0;
-
-		for (Product p : products) {
-			nettoSum += p.getNettoValue();
-			bruttoSum += p.getBruttoValue();
-		}
-
-		JLabel totalNettoLabel = new JLabel("Suma NETTO:    " + nettoSum + " zł.");
-		totalNettoLabel.setBounds(770, 460, 200, 30);
-		frame.getContentPane().add(totalNettoLabel);
-
-		JLabel totalBruttoLabel = new JLabel("Suma BRUTTO:  " + bruttoSum + " zł.");
-		totalBruttoLabel.setBounds(770, 480, 200, 30);
-		frame.getContentPane().add(totalBruttoLabel);
-
-		invoice.setTotalPrice(bruttoSum);
-	}
+//	private void resume() {
+//		double nettoSum = 0;
+//		double bruttoSum = 0;
+//
+//		for (Product p : products) {
+//			nettoSum += p.getNettoValue();
+//			bruttoSum += p.getBruttoValue();
+//		}
+//
+//		JLabel totalNettoLabel = new JLabel("Suma NETTO:    " + nettoSum + " zł.");
+//		totalNettoLabel.setBounds(770, 460, 200, 30);
+//		getContentPane().add(totalNettoLabel);
+//
+//		JLabel totalBruttoLabel = new JLabel("Suma BRUTTO:  " + bruttoSum + " zł.");
+//		totalBruttoLabel.setBounds(770, 480, 200, 30);
+//		getContentPane().add(totalBruttoLabel);
+//
+//		invoice.setTotalPrice(bruttoSum);
+//	}
 
 	// ******* Produkty - tabela w panelu i button ***************
-	public void productTable(Boolean isNew) {
+/*	public void productTable() {
 		JPanel panel = new JPanel();
 		panel.setBounds(0, 200, 1000, 250);
-		frame.getContentPane().add(panel);
+		getContentPane().add(panel);
 		panel.setLayout(new FlowLayout());
 
 		products = ProductService.getProducts();
 
-		if (isNew) {
-			products.clear();
-		}
+//		if (isNew) {
+//			products.clear();
+//		}
 
 		for (int i = 0; i < products.size(); i++) { // ----------------------------------
 			System.out.println(products.get(i).toString());
@@ -180,43 +173,43 @@ public class InvoiceNewGUI extends JFrame {
 		JLabel separator = new JLabel(
 				"___________________________________________________________________________________________________________________________________________________________________");
 		separator.setBounds(10, 500, 980, 15);
-		frame.getContentPane().add(separator);
+		getContentPane().add(separator);
 
 		// ------ getName ---------------------------
 		JLabel getNameLabel = new JLabel("Nazwa:");
 		getNameLabel.setBounds(100, 525, 100, 25);
-		frame.getContentPane().add(getNameLabel);
+		getContentPane().add(getNameLabel);
 
 		JTextField getNameField = new JTextField();
 		getNameField.setBounds(160, 525, 215, 25);
-		frame.getContentPane().add(getNameField);
+		getContentPane().add(getNameField);
 
 		// ------ getPriceNetto ---------------------------
 		JLabel getPriceNettoLabel = new JLabel("Cena netto:");
 		getPriceNettoLabel.setBounds(438, 525, 100, 25);
-		frame.getContentPane().add(getPriceNettoLabel);
+		getContentPane().add(getPriceNettoLabel);
 
 		JTextField getPriceNettoField = new JTextField();
 		getPriceNettoField.setBounds(530, 525, 120, 25);
-		frame.getContentPane().add(getPriceNettoField);
+		getContentPane().add(getPriceNettoField);
 
 		// ------ getQuantity ---------------------------
 		JLabel getQuantityLabel = new JLabel("Ilość:");
 		getQuantityLabel.setBounds(703, 525, 100, 25);
-		frame.getContentPane().add(getQuantityLabel);
+		getContentPane().add(getQuantityLabel);
 
 		JTextField getQuantityField = new JTextField();
 		getQuantityField.setBounds(750, 525, 100, 25);
-		frame.getContentPane().add(getQuantityField);
+		getContentPane().add(getQuantityField);
 
 		// ------ getUnit ---------------------------
 		JLabel getUnitLabel = new JLabel("Jednostka:");
 		getUnitLabel.setBounds(215, 560, 100, 25);
-		frame.getContentPane().add(getUnitLabel);
+		getContentPane().add(getUnitLabel);
 
 		JComboBox<String> getUnitField = new JComboBox<>(new String[] { "sztuki", "litry", "metry", "kilogramy" });
 		getUnitField.setBounds(300, 560, 130, 25);
-		frame.getContentPane().add(getUnitField);
+		getContentPane().add(getUnitField);
 		
 		
 		getUnitField.addActionListener(new ActionListener() {
@@ -230,16 +223,16 @@ public class InvoiceNewGUI extends JFrame {
 		// ------ getTax ---------------------------
 		JLabel getTaxLabel = new JLabel("Stawka VAT:");
 		getTaxLabel.setBounds(480, 560, 100, 25);
-		frame.getContentPane().add(getTaxLabel);
+		getContentPane().add(getTaxLabel);
 
 		JTextField getTaxField = new JTextField();
 		getTaxField.setBounds(575, 560, 200, 25);
-		frame.getContentPane().add(getTaxField);
+		getContentPane().add(getTaxField);
 		
 
 		JButton addProductButton = new JButton("Dodaj nowy produkt");
 		addProductButton.setBounds(355, 600, 250, 25);
-		frame.getContentPane().add(addProductButton);
+		getContentPane().add(addProductButton);
 
 		addProductButton.addActionListener(new ActionListener() { // Dodanie produktu listener
 			@Override
@@ -259,9 +252,8 @@ public class InvoiceNewGUI extends JFrame {
 					 
 					 ProductService.setProducts(product);
 					 
-					frame.dispose();
 				} else {
-					JOptionPane.showMessageDialog(frame, "Wszystkie pola muszą być prawidłowo wypełnione!");
+					JOptionPane.showMessageDialog(null, "Wszystkie pola muszą być prawidłowo wypełnione!");
 				}
 			}
 		});
@@ -289,70 +281,78 @@ public class InvoiceNewGUI extends JFrame {
 
 	protected boolean isEmpty(String getName, String getPrice, String getQuantity, String getTax) {
 		return getName.isEmpty() && getPrice.isEmpty() && getQuantity.isEmpty() && getTax.isEmpty();
-	}
+	} */
 
 	// ****** Dane firmy ***************************
 	private void setCompanyData() {
 		JLabel companyDataLabel = new JLabel("Dane wystawcy faktury:");
 		companyDataLabel.setBounds(600, 70, 200, 50);
-		frame.getContentPane().add(companyDataLabel);
+		getContentPane().add(companyDataLabel);
 
 		JLabel setCompanyName = new JLabel("Nazwa: " + invoice.getCompanyName());
 		setCompanyName.setBounds(630, 105, 200, 20);
-		frame.getContentPane().add(setCompanyName);
+		getContentPane().add(setCompanyName);
 
 		JLabel setCompanyNip = new JLabel("NIP: " + invoice.getCompanyNip());
 		setCompanyNip.setBounds(630, 120, 200, 20);
-		frame.getContentPane().add(setCompanyNip);
+		getContentPane().add(setCompanyNip);
 
 		JLabel setCompanyAddress = new JLabel("Adres: " + invoice.getCompanyAddress());
 		setCompanyAddress.setBounds(630, 135, 400, 20);
-		frame.getContentPane().add(setCompanyAddress);
+		getContentPane().add(setCompanyAddress);
 	}
 
 	// ****** Wybór klienta ***************************
 	private void setClient() {
 		JLabel selectClientLabel = new JLabel("Wybierz klienta:");
 		selectClientLabel.setBounds(10, 20, 150, 50);
-		frame.getContentPane().add(selectClientLabel);
+		getContentPane().add(selectClientLabel);
+		
+		Client c1 = new Client("Saturn sp.j.", "8376103872", "01-990 Warszawa, Kwiatowa 2/4");
+		Client c2 = new Client("Jowisz sp. z o.o.", "1234567890", "61-100 Poznań, Piękna 5");
+		Client c3 = new Client("Mars S.A.", "2874091178", "64-600 Oborniki, Mokra 12/1");
+		Client c4 = new Client("Pluton sp.c.", "8826155209", "00-950 Warszawa, Pechowa 13");
+		Client c5 = new Client("Wenus sp.j.", "0488132997", "01-991 Warszawa, Sokratesa 8/21");
+		Client c6 = new Client("Uran sp.k.", "0935188365", "00-900 Warszawa, Moliera 2");
+		
+		clientService.addClient(c1);
+		clientService.addClient(c2);
+		clientService.addClient(c3);
+		clientService.addClient(c4);
+		clientService.addClient(c5);
+		clientService.addClient(c6);
+		
 
-		clients = ClientService.getClients(); // lista obiektów Client
-		ArrayList<String> clientsName = new ArrayList<>();
-		for (int i = 0; i < clients.size(); i++) {
-			clientsName.add(clients.get(i).getName());
-		}
-		String[] clientsArray = clientsName.toArray(new String[clientsName.size()]);
-
-		JComboBox<String> comboBox = new JComboBox<>(clientsArray);
+		JComboBox<Client> comboBox =  new JComboBox<>(clientService.getClients());
 		comboBox.setBounds(130, 35, 200, 20);
-		frame.getContentPane().add(comboBox);
+		getContentPane().add(comboBox);
 
 		JLabel clientLabel = new JLabel("Dane klienta:");
 		clientLabel.setBounds(10, 70, 150, 50);
-		frame.getContentPane().add(clientLabel);
+		getContentPane().add(clientLabel);
 
 		JLabel selectedClientNameLabel = new JLabel(); // Client name label
 		selectedClientNameLabel.setBounds(30, 105, 200, 20);
-		frame.getContentPane().add(selectedClientNameLabel);
+		getContentPane().add(selectedClientNameLabel);
 
 		JLabel selectedClientNipLabel = new JLabel(); // Client NIP label
 		selectedClientNipLabel.setBounds(30, 120, 200, 20);
-		frame.getContentPane().add(selectedClientNipLabel);
+		getContentPane().add(selectedClientNipLabel);
 
 		JLabel selectedClientAddressLabel = new JLabel(); // Client address label
 		selectedClientAddressLabel.setBounds(30, 135, 300, 20);
-		frame.getContentPane().add(selectedClientAddressLabel);
+		getContentPane().add(selectedClientAddressLabel);
 
 		comboBox.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int selectedClient = comboBox.getSelectedIndex();
+				Client selected = (Client) comboBox.getSelectedItem();
+				
+				selectedClientNameLabel.setText("Nazwa: " + selected.getName());
+				selectedClientNipLabel.setText("NIP: " + selected.getNip());
+				selectedClientAddressLabel.setText("Adres: " + selected.getAddress());
 
-				selectedClientNameLabel.setText("Nazwa: " + clients.get(selectedClient).getName());
-				selectedClientNipLabel.setText("NIP: " + clients.get(selectedClient).getNip());
-				selectedClientAddressLabel.setText("Adres: " + clients.get(selectedClient).getAddress());
-
-				invoice.setClient(clients.get(selectedClient));
+				invoice.setClient(selected);
 			}
 		});
 	}
@@ -361,18 +361,18 @@ public class InvoiceNewGUI extends JFrame {
 	private void setInvoiceNumberAddDate() {
 		JLabel invoiceNumberLabel = new JLabel("Numer faktury:");
 		invoiceNumberLabel.setBounds(700, 0, 150, 50);
-		frame.getContentPane().add(invoiceNumberLabel);
+		getContentPane().add(invoiceNumberLabel);
 
-		JLabel getInvoiceNumberLabel = new JLabel(invoice.getInvoiceNumber());
+		JLabel getInvoiceNumberLabel = new JLabel();
 		getInvoiceNumberLabel.setBounds(850, 0, 100, 50);
-		frame.getContentPane().add(getInvoiceNumberLabel);
+		getContentPane().add(getInvoiceNumberLabel);
 
 		JLabel dateLabel = new JLabel("Data wystawienia:");
 		dateLabel.setBounds(700, 20, 150, 50);
-		frame.getContentPane().add(dateLabel);
+		getContentPane().add(dateLabel);
 
-		JLabel getDateLabel = new JLabel(invoice.getDate());
+		JLabel getDateLabel = new JLabel();
 		getDateLabel.setBounds(850, 20, 100, 50);
-		frame.getContentPane().add(getDateLabel);
+		getContentPane().add(getDateLabel);
 	}
 }

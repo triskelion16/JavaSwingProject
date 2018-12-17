@@ -1,6 +1,10 @@
 package application;
 
 import java.awt.EventQueue;
+
+import service.ClientService;
+import service.InvoiceService;
+import service.ProductService;
 import view.MainGUI;
 
 public class App {
@@ -10,7 +14,10 @@ public class App {
 		EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				new MainGUI();
+				InvoiceService invoiceService = new InvoiceService();
+				ProductService productService = new ProductService();
+				ClientService clientService = new ClientService();
+				new MainGUI(invoiceService, productService, clientService);
 			}
 		});
 	}
