@@ -34,8 +34,8 @@ public class InvoiceService {
 //		new MainGUI();
 //	}
 //	
-	public static double getRoundPrice(double price) {
-		return Math.round(price * 100.0) / 100.0;
-	}
+//	public static double getRoundPrice(double price) {
+//		return Math.round(price * 100.0) / 100.0;
+//	}
 
 }

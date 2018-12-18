@@ -5,6 +5,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -45,20 +46,20 @@ public class MainGUI extends JFrame{
 		label.setBounds(10, 130, 100, 50);
 		getContentPane().add(label);
 		
-		JPanel panel1 = new JPanel();
-		panel1.setBounds(0, 180, 1000, 405);
-		getContentPane().add(panel1);
-		panel1.setLayout(new FlowLayout());
+		JPanel panel = new JPanel();
+		panel.setBounds(0, 180, 1000, 405);
+		getContentPane().add(panel);
+		panel.setLayout(new FlowLayout());
 		
 		
+		JList<Invoice> invoices = new JList<>(invoiceService.getInvoices());
+		invoices.setListData(invoiceService.getInvoices());
 		
-		JList<Invoice> list = new JList<>(invoiceService.getInvoices());
-		list.setListData(invoiceService.getInvoices());
 		System.out.println(invoiceService.getInvoices().length);
 		
-		JScrollPane listScroller = new JScrollPane(list); // Scroll w przypadku większej ilości faktur
+		JScrollPane listScroller = new JScrollPane(invoices); // Scroll w przypadku większej ilości faktur
 		listScroller.setPreferredSize(new Dimension(980, 400));
-		panel1.add(listScroller);
+		panel.add(listScroller);
 		
 		JButton button = new JButton("Dodaj nową fakturę");
 		button.setBounds(10, 650, 200, 30);
@@ -66,7 +67,7 @@ public class MainGUI extends JFrame{
 		
 		
 		//***** Invoice list listener ************************
-		list.addListSelectionListener(new ListSelectionListener() {
+		invoices.addListSelectionListener(new ListSelectionListener() {
 		    public void valueChanged(ListSelectionEvent event) {
 		        if (!event.getValueIsAdjusting()){
 		            JList<?> source = (JList<?>)event.getSource();
@@ -76,7 +77,7 @@ public class MainGUI extends JFrame{
 		            
 		            Integer invoiceIndex = source.getSelectedIndex();
 		            System.out.println(invoiceIndex);
-		            
+		            System.out.println("KKKKKKKKKKKK");
 		        }
 		    }
 		});

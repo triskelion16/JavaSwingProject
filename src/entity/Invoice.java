@@ -80,11 +80,15 @@ public class Invoice {
 	public String getCompanyAddress() {
 		return companyAddress;
 	}
+	
+	public static double getRoundPrice(double price) {
+		return Math.round(price * 100.0) / 100.0;
+	}
 
 	@Override
 	public String toString() {
 		return "Faktura numer: " + invoiceNumber + "  |  Data wystawienia: " + date + "  |  Nazwa klienta: " + client.getName() + "  |  Nip klienta: " + client.getNip() 
-		+ "  |  Kwota faktury: " + InvoiceService.getRoundPrice(totalPrice) + " zł.";
+		+ "  |  Kwota faktury brutto: " + getRoundPrice(totalPrice) + " zł.";
 	}
 
 }
