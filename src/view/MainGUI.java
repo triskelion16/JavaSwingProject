@@ -77,7 +77,10 @@ public class MainGUI extends JFrame{
 		            
 		            Integer invoiceIndex = source.getSelectedIndex();
 		            System.out.println(invoiceIndex);
-		            System.out.println("KKKKKKKKKKKK");
+		            
+		            new InvoiceOldGUI(invoiceService, productService, clientService, MainGUI.this, invoiceIndex);
+		            
+		            dispose();
 		        }
 		    }
 		});

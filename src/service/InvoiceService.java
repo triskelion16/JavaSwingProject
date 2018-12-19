@@ -14,28 +14,8 @@ public class InvoiceService {
 	public void addInvoice(Invoice invoice) {
 		invoices.add(invoice);
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-//	static ArrayList<Invoice> invoices = new ArrayList<>();
-//	
-//	public static ArrayList<Invoice> getInvoices() {
-//		return invoices;
-//	}
-//	
-//	public static void setInvoices(Invoice invoice) {
-//		invoices.add(invoice);
-//		new MainGUI();
-//	}
-//	
-//	public static double getRoundPrice(double price) {
-//		return Math.round(price * 100.0) / 100.0;
-//	}
 
+	public Invoice getInvoice(Integer invoiceIndex) {
+		return invoices.get(invoiceIndex);
+	}
 }

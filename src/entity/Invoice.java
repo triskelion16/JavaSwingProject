@@ -4,8 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import service.InvoiceService;
-
 public class Invoice {
 	private SimpleDateFormat format;
 	
@@ -22,9 +20,11 @@ public class Invoice {
 	private final String companyAddress = "00-665 Warszawa, Nowowiejska 15";
 	
 	public Invoice() {
-		invoiceNumber = "* BRAK *";
-		date = "* BRAK *";
-		isEditable = true;
+	}
+	
+	public void setEmpty() {
+		this.invoiceNumber = "* BRAK *";
+		this.date = "* BRAK *";
 	}
 	
 	public String getInvoiceNumber() {

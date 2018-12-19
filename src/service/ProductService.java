@@ -19,18 +19,7 @@ public class ProductService {
 		products.remove(product);
 	}
 	
-
-	
-	
-	
-
-//	public static ArrayList<Product> getProducts() {
-//		return products;
-//	}
-//
-//	public static void setProducts(Product product) {
-//		products.add(product);
-//		
-//		new InvoiceNewGUI(false);
-//	}
+	public Product getProduct(Integer invoiceIndex) {
+		return products.get(invoiceIndex);
+	}
 }

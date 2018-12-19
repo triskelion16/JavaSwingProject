@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -14,6 +15,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import entity.Client;
 import entity.Invoice;
@@ -22,7 +25,8 @@ import service.ClientService;
 import service.InvoiceService;
 import service.ProductService;
 
-public class InvoiceNewGUI extends JFrame {
+public class InvoiceOldGUI extends JFrame{
+
 	private static final long serialVersionUID = 1L;
 
 	private InvoiceService invoiceService;
@@ -31,20 +35,24 @@ public class InvoiceNewGUI extends JFrame {
 	private MainGUI mainGUI;
 
 	Invoice invoice = new Invoice();
+	private Integer invoiceIndex;
 
 	private Double nettoSum = 0.0;
 	private Double bruttoSum = 0.0;
 
-	public InvoiceNewGUI(InvoiceService invoiceService, ProductService productService, ClientService clientService,
-			MainGUI mainGUI) {
+	public InvoiceOldGUI(InvoiceService invoiceService, ProductService productService, ClientService clientService,
+			MainGUI mainGUI, Integer invoceIndex) {
 		this.invoiceService = invoiceService;
 		this.productService = productService;
 		this.clientService = clientService;
 		this.mainGUI = mainGUI;
+		this.invoiceIndex = invoceIndex;
 
 		setBounds(200, 50, 1000, 800);
 		setLayout(null);
 		setVisible(true);
+		
+		invoice = invoiceService.getInvoice(invoiceIndex);
 
 		setInvoiceNumberAddDate();
 		setClient();
@@ -67,14 +75,11 @@ public class InvoiceNewGUI extends JFrame {
 				if (!invoice.isEditable()) {
 					invoice.setDate();
 					invoice.setInvoiceNumber();
-				} else {
-					invoice.setEmpty();
 				}
 
 				if (invoice.getClient() == null) {
 					JOptionPane.showMessageDialog(null, "Należy wybrać klienta z listy!");
 				} else {
-					invoiceService.addInvoice(invoice);
 
 					// mainGUI. // NIe wiem jak odświeżyć listę w MainGUI
 
@@ -88,11 +93,15 @@ public class InvoiceNewGUI extends JFrame {
 
 	// ******* CheckBox - wystaw fakturę ******************************
 	private void isInvoiceEditable() {
-		invoice.setEditable(true);
-		
 		JCheckBox checkBox = new JCheckBox("*** Wystaw fakturę! ***");
 		checkBox.setBounds(380, 680, 250, 50);
 		getContentPane().add(checkBox);
+		
+		if(!invoice.isEditable()) {
+			checkBox.setEnabled(false);
+			checkBox.setSelected(true);
+		}
+		
 
 		checkBox.addActionListener(new ActionListener() {
 			@Override
@@ -118,6 +127,7 @@ public class InvoiceNewGUI extends JFrame {
 		//JList<Product> products = new JList<>(productService.getProducts());
 		JList<Product> products = new JList<>();
 		
+		//products.removeAll();
 		
 		products.setListData(productService.getProducts());
 
@@ -204,6 +214,23 @@ public class InvoiceNewGUI extends JFrame {
 		JLabel totalBruttoField = new JLabel();
 		totalBruttoField.setBounds(890, 480, 200, 30);
 		getContentPane().add(totalBruttoField);
+		
+		if(!invoice.isEditable()) {
+			addProductButton.setEnabled(false);
+			getNameField.setEditable(false);
+			getPriceNettoField.setEditable(false);
+			getQuantityField.setEditable(false);
+			getTaxField.setEditable(false);
+		}
+		
+		for (int i = 0; i < productService.getProducts().length; i++) {
+			System.out.println(productService.getProducts()[i].toString());
+			nettoSum += productService.getProducts()[i].getNettoValue();
+			bruttoSum += productService.getProducts()[i].getBruttoValue();
+		}
+		
+		totalBruttoField.setText(bruttoSum.toString());
+		totalNettoField.setText(nettoSum.toString());
 
 		addProductButton.addActionListener(new ActionListener() { // Dodanie produktu listener
 			@Override
@@ -252,6 +279,27 @@ public class InvoiceNewGUI extends JFrame {
 					JOptionPane.showMessageDialog(null, "Wszystkie pola muszą być prawidłowo wypełnione!");
 				}
 			}
+		});
+		
+		//***** Product list listener ************************
+		products.addListSelectionListener(new ListSelectionListener() {
+		    public void valueChanged(ListSelectionEvent event) {
+		        if (!event.getValueIsAdjusting()){
+		            JList<?> source = (JList<?>)event.getSource();
+		            
+		            String selected = source.getSelectedValue().toString();
+		            System.out.println(selected);
+		            
+		            Integer productIndex = source.getSelectedIndex();
+		            System.out.println(productIndex);
+		            
+		            
+		            getNameField.setText(productService.getProduct(productIndex).getName());
+					getPriceNettoField.setText(productService.getProduct(productIndex).getPriceNetto().toString());
+					getQuantityField.setText(productService.getProduct(productIndex).getQuantity().toString());
+					getTaxField.setText(productService.getProduct(productIndex).getTax().toString());
+		        }
+		    }
 		});
 	}
 
@@ -326,6 +374,14 @@ public class InvoiceNewGUI extends JFrame {
 		JLabel selectedClientAddressLabel = new JLabel(); // Client address label
 		selectedClientAddressLabel.setBounds(30, 135, 300, 20);
 		getContentPane().add(selectedClientAddressLabel);
+		
+		selectedClientNameLabel.setText("Nazwa: " + invoice.getClient().getName());
+		selectedClientNipLabel.setText("NIP: " + invoice.getClient().getNip());
+		selectedClientAddressLabel.setText("Adres: " + invoice.getClient().getAddress());
+		
+		if(!invoice.isEditable()) {
+			comboBox.setEnabled(false);
+		}
 
 		comboBox.addActionListener(new ActionListener() {
 			@Override

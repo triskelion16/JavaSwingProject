@@ -2,17 +2,17 @@ package entity;
 
 public class Product {
 	private String name;
-	private int quantity;
+	private Integer quantity;
 	private String unit;
-	private double priceNetto;
-	private double tax;
+	private Double priceNetto;
+	private Double tax;
 	
-	public Product() {
-		unit = "sztuki";
-	}
+//	public Product() {
+//		unit = "sztuki";
+//	}
 	
 
-	public Product(String name, int quantity, double priceNetto, double tax) {
+	public Product(String name, Integer quantity, Double priceNetto, Double tax) {
 		this.name = name;
 		this.quantity = quantity;
 		this.priceNetto = priceNetto;
@@ -27,17 +27,17 @@ public class Product {
 		this.name = name;
 	}
 
-	public int getQuantity() {
+	public Integer getQuantity() {
 		return quantity;
 	}
-	public void setQuantity(int quantity) {
+	public void setQuantity(Integer quantity) {
 		this.quantity = quantity;
 	}
 
-	public double getTax() {
+	public Double getTax() {
 		return tax;
 	}
-	public void setTax(double tax) {
+	public void setTax(Double tax) {
 		this.tax = tax;
 	}
 
@@ -48,10 +48,10 @@ public class Product {
 		this.unit = unit;
 	}
 
-	public double getPriceNetto() {
+	public Double getPriceNetto() {
 		return priceNetto;
 	}
-	public void setPriceNetto(double priceNetto) {
+	public void setPriceNetto(Double priceNetto) {
 		this.priceNetto = priceNetto;
 	}
 
